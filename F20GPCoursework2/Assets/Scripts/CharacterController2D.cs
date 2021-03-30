@@ -13,12 +13,12 @@ public class CharacterController2D : MonoBehaviour
     [SerializeField] private Collider2D m_CrouchDisableCollider;                // A collider that will be disabled when crouching
 
     const float k_GroundedRadius = .075f; // Radius of the overlap circle to determine if grounded
-    private bool m_Grounded;            // Whether or not the player is grounded.
+    public bool m_Grounded;            // Whether or not the player is grounded.
     const float k_CeilingRadius = .2f; // Radius of the overlap circle to determine if the player can stand up
     private Rigidbody2D m_Rigidbody2D;
     private bool m_FacingRight = true;  // For determining which way the player is currently facing.
     private Vector3 m_Velocity = Vector3.zero;
-    public int countJump = 2;
+    public int countJump = 1;
     [Header("Events")]
     [Space]
 
@@ -35,6 +35,8 @@ public class CharacterController2D : MonoBehaviour
     [HideInInspector]
     public bool Falling = false;  //Other scripts can check this value to see if currently falling
     public Animator anim;
+
+    public PlayerMovement2 pm2;
     void Update()
     {
         if (m_Rigidbody2D.velocity.y < FallingThreshold)
@@ -42,6 +44,7 @@ public class CharacterController2D : MonoBehaviour
             Falling = true;
             anim.SetBool("isJumping", false);
             anim.SetBool("isDashing", false);
+
         }
         else
         {
@@ -50,6 +53,7 @@ public class CharacterController2D : MonoBehaviour
         if (Falling)
         {
             anim.SetBool("isFalling", true);
+            anim.SetFloat("run", 0f);
         }
 
     }
@@ -87,7 +91,7 @@ public class CharacterController2D : MonoBehaviour
     }
 
 
-    public void Move(float move, bool crouch, bool jump, bool dash)
+    public void Move(float move, bool crouch, bool jump, bool dash, bool glide)
     {
         // If crouching, check to see if the character can stand up
         if (!crouch)
@@ -165,6 +169,7 @@ public class CharacterController2D : MonoBehaviour
             {
                 m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
                 countJump--;
+                pm2.doubleJumpValue = 1;
             }
 
         }
@@ -174,6 +179,15 @@ public class CharacterController2D : MonoBehaviour
         {
             Vector3 targetVelocity = new Vector2(move * 300f, m_Rigidbody2D.velocity.y);
             m_Rigidbody2D.velocity = Vector3.SmoothDamp(m_Rigidbody2D.velocity, targetVelocity, ref m_Velocity, m_MovementSmoothing);
+        }
+
+        if (glide)
+        {
+            m_Rigidbody2D.gravityScale = 3.0f;
+        }
+        else
+        {
+            m_Rigidbody2D.gravityScale = 14.345f;
         }
     }
 
