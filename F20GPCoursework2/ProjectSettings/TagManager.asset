@@ -7,6 +7,9 @@ TagManager:
   - Kill
   - Jump
   - Wall
+  - Switch
+  - Portal
+  - damagedWall
   layers:
   - Default
   - TransparentFX

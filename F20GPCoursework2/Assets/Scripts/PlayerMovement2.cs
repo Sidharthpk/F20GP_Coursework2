@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement2 : MonoBehaviour
 {
@@ -8,6 +9,9 @@ public class PlayerMovement2 : MonoBehaviour
     public CharacterController2D controller;
     public Animator anim;
     public GameObject dj;
+    public GameObject on;
+    public GameObject off;
+    public GameObject portal;
     float horizontalMoveRight = 0f;
     public float speed = 40f;
     bool jump = false;
@@ -75,5 +79,27 @@ public class PlayerMovement2 : MonoBehaviour
             //Destroy(dj);
             dj.SetActive(false);
         }
+        else if(hitInfo.gameObject.CompareTag("Switch"))
+        {
+            if(off.activeSelf == true)
+            {
+                off.SetActive(false);
+                on.SetActive(true);
+                portal.SetActive(true);
+            }
+
+        }
+        else if(hitInfo.gameObject.CompareTag("Portal"))
+        {
+            if (SceneManager.GetActiveScene().name == "Tutorial Scene")
+            {
+                SceneManager.LoadScene("Level1");
+            }
+            else if (SceneManager.GetActiveScene().name == "Level1")
+            {
+                SceneManager.LoadScene("Start Menu");
+            }
+        }
     }
+
 }
